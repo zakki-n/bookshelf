@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}お気に入りリスト{% endblock %}
+{% block h1 %}あなたのお気に入りリスト{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-9">
+      {% if favorites %}
+        {% for favorite in favorites %}
+          <div class="p-4 m-4 bg-light border border-success rounded">
+            <h2 class="text-success">{{ favorite.book.title }}</h2> {# Favoriteオブジェクトから関連するBookのタイトルを表示 #}
+            {% if favorite.book.thumbnail %}
+              <div class="w-25 p-3">
+                <img src="{{ favorite.book.thumbnail.url }}" class="img-thumbnail">
+              </div>
+            {% else %}
+              <p>No thumbnail available</p>
+            {% endif %}
+            <h6 class="fw-light">カテゴリ：{{ favorite.book.category }}</h6>
+            <div class="mt-3">
+              <a href="{% url 'detail-book' favorite.book.pk %}" class="link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">詳細へ</a>
+              <form action="{% url 'delete-favorite' favorite.book.pk %}" method="post" style="display:inline; margin-left: 15px;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-warning btn-sm">お気に入り解除</button>
+              </form>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>まだお気に入り登録された本はありません。</p>
+      {% endif %}
+    </div>
+    <div class="col-md-3">
+      {# レビューランキングや、その他のユーザー関連情報を表示する場所 #}
+    </div>
+  </div>
+{% endblock %}
